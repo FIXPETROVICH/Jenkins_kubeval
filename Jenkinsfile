@@ -1,53 +1,59 @@
-pipeline {
-  agent { label 'test3' }
-    yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: test3
-    image: garethr/kubeval:latest
-    command:
-      - cat
-    tty: true
-"""
-    }
-  triggers { pollSCM 'H/15 * * * *' }
-  stages {
-    stage('Clone repository') { 
-      steps {
-        git url: 'https://github.com/FIXPETROVICH/jenkins_kubeval.git', branch: 'master' 
-      }
-    }
-    stage('Kubeval manifests') {
-      parallel {
-        stage('Check node-exporter.yaml') {
-          steps {
-            container('test3') {
-              sh """#!/bin/sh
-                    kubeval manifests/node-exporter.yaml  
-                 """
+peline{
+    agent{
+        kubernetes{
+           yaml"""
+        apiVersion: v1
+        kind: Pod
+        metadata:
+        spec:
+          containers:
+          - name: kubeval
+            image: garethr/kubeval:latest
+            imagePullPolicy: IfNotPresent
+            command:
+            - "watch"
+            - "date"
+            tty: true
+        """
             }
-          }
         }
-        stage('Check ms.yaml') {
-          steps {
-            container('test3') {
-              sh """#!/bin/sh
-                    kubeval manifests/ms.yaml
-                 """
+    
+    stages {
+        stage('Clone git') {
+            steps{ 
+                git url: 'https://github.com/FIXPETROVICH/Jenkins_kubeval.git', branch: 'master'
             }
-          }
-        }         
-      }
-    }
-  }
-  post {
-    success {
-      slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-    }
-    failure {
-      slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-    }
-  }
+        }    
+        stage ('Validations') {
+            parallel{
+                stage ('validation Deploy_n.yaml'){    
+                    steps {
+                        container ('kubeval') { 
+                            sh """#!/bin/sh
+                            kubeval Deploy_n.yaml 
+                            """
+                        }
+                    }
+                }    
+                stage ('validation Deploy_r.yaml'){    
+                    steps {                 
+                        container ('kubeval') {
+                            sh """#!/bin/sh
+                            kubeval Deploy_r.yaml 
+                            """
+                               }
+                        }  
+                    }
+                }
+            }
+        }
+    post {
+        success {
+        slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
+        failure {
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
            
+            }
+        }
+    }     
