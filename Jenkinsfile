@@ -8,7 +8,7 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: hw19
+  - name: test3
     image: garethr/kubeval:latest
     command:
       - cat
