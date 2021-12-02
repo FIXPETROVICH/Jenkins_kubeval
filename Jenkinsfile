@@ -12,7 +12,6 @@ spec:
     tty: true
 """
     }
-  }
   triggers { pollSCM 'H/15 * * * *' }
   stages {
     stage('Clone repository') { 
