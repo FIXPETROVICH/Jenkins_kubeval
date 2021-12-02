@@ -16,7 +16,7 @@ spec:
 """
     }
   }
-  triggers { pollSCM 'H 14 * * 6' }
+  triggers { pollSCM 'H/15 * * * *' }
   stages {
     stage('Clone repository') { 
       steps {
