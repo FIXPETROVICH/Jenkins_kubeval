@@ -1,7 +1,6 @@
 pipeline {
   agent { label 'test3' }
-    kubernetes {
-      yaml """
+    yaml """
 apiVersion: v1
 kind: Pod
 spec:
@@ -52,3 +51,4 @@ spec:
       slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
     }
   }
+           }
