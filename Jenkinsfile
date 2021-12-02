@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      defaultContainer 'hw19'
+      defaultContainer 'test3'
       inheritFrom 'jnlp'
       yaml """
 apiVersion: v1
@@ -27,7 +27,7 @@ spec:
       parallel {
         stage('Check node-exporter.yaml') {
           steps {
-            container('hw19') {
+            container('test3') {
               sh """#!/bin/sh
                     kubeval manifests/node-exporter.yaml  
                  """
@@ -36,7 +36,7 @@ spec:
         }
         stage('Check ms.yaml') {
           steps {
-            container('hw19') {
+            container('test3') {
               sh """#!/bin/sh
                     kubeval manifests/ms.yaml
                  """
