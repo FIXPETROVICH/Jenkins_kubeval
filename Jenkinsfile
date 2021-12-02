@@ -1,14 +1,14 @@
 pipeline {
   agent {
     kubernetes {
-      defaultContainer 'eval'
+      defaultContainer 'hw19'
       inheritFrom 'jnlp'
       yaml """
 apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: eval
+  - name: hw19
     image: garethr/kubeval:latest
     command:
       - cat
@@ -27,7 +27,7 @@ spec:
       parallel {
         stage('Check node-exporter.yaml') {
           steps {
-            container('eval') {
+            container('hw19') {
               sh """#!/bin/sh
                     kubeval manifests/node-exporter.yaml  
                  """
@@ -36,7 +36,7 @@ spec:
         }
         stage('Check ms.yaml') {
           steps {
-            container('eval') {
+            container('hw19') {
               sh """#!/bin/sh
                     kubeval manifests/ms.yaml
                  """
