@@ -20,7 +20,7 @@ spec:
   stages {
     stage('Clone repository') { 
       steps {
-        git url: 'https://github.com/snegboris/jenkins_kubeval.git', branch: 'master' 
+        git url: 'https://github.com/FIXPETROVICH/jenkins_kubeval.git', branch: 'master' 
       }
     }
     stage('Kubeval manifests') {
